@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.example.juego.DB.Player
+import com.example.juego.Sesion.QRHelper
 
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
@@ -164,21 +165,33 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     fun registerPlayer(username: String, email: String, password: String): Long {
         val db = this.writableDatabase
-        val qrToken = generateQRToken(username)
 
+        // Primero insertar sin token para obtener el ID
         val values = ContentValues().apply {
             put(COLUMN_USERNAME, username)
             put(COLUMN_EMAIL, email)
             put(COLUMN_PASSWORD, password)
             put(COLUMN_SCORE, 0)
             put(COLUMN_MAX_SCORE, 0)
-            put(COLUMN_QR_TOKEN, qrToken)
         }
 
-        val result = db.insert(TABLE_PLAYERS, null, values)
+        val playerId = db.insert(TABLE_PLAYERS, null, values)
+
+        if (playerId != -1L) {
+            // Generar token seguro con el ID real
+            val qrToken = QRHelper.generateSecureToken(playerId.toInt(), username)
+
+            // Actualizar con el token
+            val updateValues = ContentValues().apply {
+                put(COLUMN_QR_TOKEN, qrToken)
+            }
+            db.update(TABLE_PLAYERS, updateValues, "$COLUMN_ID = ?", arrayOf(playerId.toString()))
+        }
+
         db.close()
-        return result
+        return playerId
     }
+
 
     fun loginPlayer(usernameOrEmail: String, password: String): Boolean {
         val db = this.readableDatabase

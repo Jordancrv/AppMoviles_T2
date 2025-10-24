@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.juego.DB.DatabaseHelper
 import com.example.juego.MainActivity
 import com.example.juego.R
-import com.example.juego.Sesion.SessionManager
 
 class LoginActivity : AppCompatActivity() {
 
@@ -20,6 +19,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var etUsernameOrEmail: EditText
     private lateinit var etPassword: EditText
     private lateinit var btnLogin: Button
+    private lateinit var btnScanQR: Button
     private lateinit var tvRegister: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,6 +40,7 @@ class LoginActivity : AppCompatActivity() {
         etUsernameOrEmail = findViewById(R.id.etUsernameOrEmail)
         etPassword = findViewById(R.id.etPassword)
         btnLogin = findViewById(R.id.btnLogin)
+        btnScanQR = findViewById(R.id.btnScanQR)
         tvRegister = findViewById(R.id.tvRegister)
 
         // Botón de login
@@ -59,6 +60,11 @@ class LoginActivity : AppCompatActivity() {
                     Toast.makeText(this, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show()
                 }
             }
+        }
+
+        // Botón para escanear QR
+        btnScanQR.setOnClickListener {
+            startActivity(Intent(this, QRScanActivity::class.java))
         }
 
         // Navegar a registro

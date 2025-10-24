@@ -12,26 +12,31 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Juego"
         tools:targetApi="31">
-
-        <!-- LoginActivity como ÚNICA actividad de inicio -->
+        <activity
+            android:name=".Sesion.QRScanActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Sesion.ProfileActivity"
+            android:exported="false" /> <!-- LoginActivity como ÚNICA actividad de inicio -->
         <activity
             android:name=".Sesion.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <!-- RegisterActivity sin intent-filter -->
+        </activity> <!-- RegisterActivity sin intent-filter -->
         <activity
             android:name=".Sesion.RegisterActivity"
-            android:exported="false" />
-
-        <!-- MainActivity sin intent-filter -->
+            android:exported="false" /> <!-- MainActivity sin intent-filter -->
         <activity
             android:name=".MainActivity"
             android:exported="false" />
+        <activity
+            android:name="com.journeyapps.barcodescanner.CaptureActivity"
+            android:screenOrientation="portrait"
+            tools:replace="screenOrientation" />
 
     </application>
 

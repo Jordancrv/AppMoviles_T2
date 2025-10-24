@@ -8,11 +8,13 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.example.juego.Sesion.LoginActivity
+import com.example.juego.Sesion.ProfileActivity
 import com.example.juego.Sesion.SessionManager
 import com.example.juego.DB.DatabaseHelper
 
@@ -29,6 +31,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var timeText: TextView
     private lateinit var scoreText: TextView
+    private lateinit var btnProfile: Button
     private lateinit var sessionManager: SessionManager
     private lateinit var databaseHelper: DatabaseHelper
 
@@ -56,8 +59,14 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-        timeText= findViewById<TextView>(R.id.timeText)
-        scoreText= findViewById<TextView>(R.id.scoreText)
+        timeText = findViewById(R.id.timeText)
+        scoreText = findViewById(R.id.scoreText)
+        btnProfile = findViewById(R.id.btnProfile)
+
+        // Botón para ver perfil y QR
+        btnProfile.setOnClickListener {
+            startActivity(Intent(this, ProfileActivity::class.java))
+        }
 
         val imageView: ImageView = findViewById(R.id.imageView)
         imageView.setImageResource(R.drawable.pikachu)
@@ -120,8 +129,8 @@ class MainActivity : AppCompatActivity() {
                     finish()
                     startActivity(intent)
                 }
-                alert.setNegativeButton("No") {dialog, which ->
-                    Toast.makeText(this@MainActivity,"Juego Terminado =/",Toast.LENGTH_LONG).show()
+                alert.setNegativeButton("Ver Perfil") {dialog, which ->
+                    startActivity(Intent(this@MainActivity, ProfileActivity::class.java))
                 }
                 alert.setNeutralButton("Cerrar Sesión") {dialog, which ->
                     sessionManager.logoutUser()
