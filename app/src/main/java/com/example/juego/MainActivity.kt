@@ -68,42 +68,32 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, ProfileActivity::class.java))
         }
 
-        val imageView: ImageView = findViewById(R.id.imageView)
-        imageView.setImageResource(R.drawable.pikachu)
-        val imageView2: ImageView = findViewById(R.id.imageView2)
-        imageView2.setImageResource(R.drawable.pikachu)
-        val imageView3: ImageView = findViewById(R.id.imageView3)
-        imageView3.setImageResource(R.drawable.pikachu)
-        val imageView4: ImageView = findViewById(R.id.imageView4)
-        imageView4.setImageResource(R.drawable.pikachu)
-        val imageView5: ImageView = findViewById(R.id.imageView5)
-        imageView5.setImageResource(R.drawable.pikachu)
-        val imageView6: ImageView = findViewById(R.id.imageView6)
-        imageView6.setImageResource(R.drawable.pikachu)
-        val imageView7: ImageView = findViewById(R.id.imageView7)
-        imageView7.setImageResource(R.drawable.pikachu)
-        val imageView8: ImageView = findViewById(R.id.imageView8)
-        imageView8.setImageResource(R.drawable.pikachu)
-        val imageView9: ImageView = findViewById(R.id.imageView9)
-        imageView9.setImageResource(R.drawable.pikachu)
+        val imageViewIds = listOf(
+            R.id.imageView, R.id.imageView2, R.id.imageView3,
+            R.id.imageView4, R.id.imageView5, R.id.imageView6,
+            R.id.imageView7, R.id.imageView8, R.id.imageView9
+        )
 
-        //ImageArray
-        imageArray.add(imageView)
-        imageArray.add(imageView2)
-        imageArray.add(imageView3)
-        imageArray.add(imageView4)
-        imageArray.add(imageView5)
-        imageArray.add(imageView6)
-        imageArray.add(imageView7)
-        imageArray.add(imageView8)
-        imageArray.add(imageView9)
+        imageArray.clear()
+        for (id in imageViewIds) {
+            val iv = findViewById<ImageView>(id)
+            iv.setImageResource(R.drawable.pikachu)
+            iv.tag = "pikachu"
+            imageArray.add(iv)
+        }
 
         hideImages()
 
         //CountDown Timer
-        object : CountDownTimer(15500,1000){
+        object : CountDownTimer(75000,1000){
+            override fun onTick(millisUntilFinished: Long) {
+                val seconds = millisUntilFinished / 1000
+                val minutes = seconds / 60
+                val secs = seconds % 60
+                timeText.text = String.format("Tiempo: %02d:%02d", minutes, secs)
+            }
             override fun onFinish() {
-                timeText.text = "Tiempo: 0 seg"
+                timeText.text = "Tiempo: 00:00"
                 handler.removeCallbacks(runnable)
                 for (image in imageArray) {
                     image.visibility = View.INVISIBLE
@@ -143,10 +133,6 @@ class MainActivity : AppCompatActivity() {
                 alert.show()
             }
 
-            override fun onTick(millisUntilFinished: Long) {
-                timeText.text = "Tiempo: " + millisUntilFinished/1000 + " seg"
-            }
-
         }.start()
     }
 
@@ -156,20 +142,37 @@ class MainActivity : AppCompatActivity() {
                 for (image in imageArray) {
                     image.visibility = View.INVISIBLE
                 }
+
                 val random = Random()
                 val randomIndex = random.nextInt(9)
-                imageArray[randomIndex].visibility = View.VISIBLE
-                handler.postDelayed(runnable,500)
+                val randomEnemy = random.nextInt(4) // 1 de cada 4 será enemigo
+
+                val selectedImage = imageArray[randomIndex]
+                if (randomEnemy == 0) {
+                    selectedImage.setImageResource(R.drawable.meowth)
+                    selectedImage.tag = "meowth"
+                } else {
+                    selectedImage.setImageResource(R.drawable.pikachu)
+                    selectedImage.tag = "pikachu"
+                }
+
+                selectedImage.visibility = View.VISIBLE
+                handler.postDelayed(runnable, 600)
             }
         }
         handler.post(runnable)
     }
+    fun increaseScore(view: View) {
+        val image = view as ImageView
+        val tag = image.tag
 
-    fun increaseScore(view: View){
-        score = score + 1
+        if (tag == "meowth") {
+            score -= 2
+        } else {
+            score += 1
+        }
         scoreText.text = "Puntaje: $score"
     }
-
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacks(runnable)

@@ -244,7 +244,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         }
 
         cursor.close()
-        db.close()
+//        db.close()
         return player
     }
 
